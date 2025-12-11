@@ -12,7 +12,7 @@ use std::process;
 
 fn print_help() {
 
-    println!("Sublime Project Generator v{} by {}", env!("CARGO_PKG_VERSION"), env!("CARGO_PKG_AUTHOR"));
+    println!("Sublime Project Generator v{} by {}", env!("CARGO_PKG_VERSION"), env!("CARGO_PKG_AUTHORS"));
     println!();
     println!("Usage:");
     println!("  sublime-gen [OPTIONS]");
