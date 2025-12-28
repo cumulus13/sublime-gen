@@ -130,7 +130,6 @@ fn main() {
     if cli.version {
         let version = colorful_version!();
         version.print_and_exit();
-        return;
     }
 
     // Process project path
