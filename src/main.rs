@@ -5,7 +5,7 @@
 // License: MIT
 
 use std::env;
-use std::fs::File;
+use std::fs::{File, OpenOptions, read_to_string};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -123,6 +123,48 @@ fn generate_workspace_file(path: &Path, name: &str) -> std::io::Result<()> {
     Ok(())
 }
 
+fn ensure_gitignore(path: &Path) -> std::io::Result<()> {
+    let gitignore_path = path.join(".gitignore");
+
+    let mut needs_append = true;
+
+    if gitignore_path.exists() {
+        let content = read_to_string(&gitignore_path)?;
+
+        // Check for existing rules
+        let patterns = [
+            "*.sublime-project",
+            "*.sublime-workspace",
+            "*.sublime-*"
+        ];
+
+        for p in &patterns {
+            if content.contains(p) {
+                needs_append = false;
+                break;
+            }
+        }
+    }
+
+    if needs_append {
+        let mut file = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&gitignore_path)?;
+
+        // Ensure newline separation
+        writeln!(file)?;
+        writeln!(file, "# Ignore Sublime Text project files")?;
+        writeln!(file, "*.sublime-*")?;
+
+        println!("✓ Updated .gitignore: {}", gitignore_path.display());
+    } else {
+        println!("✓ .gitignore already contains Sublime ignore rules");
+    }
+
+    Ok(())
+}
+
 fn main() {
     let cli = CLI::parse();
 
@@ -171,6 +213,10 @@ fn main() {
     if let Err(e) = generate_workspace_file(&target_dir, &project_name) {
         eprintln!("Error creating workspace file: {}", e);
         process::exit(1);
+    }
+
+    if let Err(e) = ensure_gitignore(&target_dir) {
+        eprintln!("Warning: Failed to update .gitignore: {}", e);
     }
     
     println!();
