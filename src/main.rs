@@ -131,7 +131,7 @@ fn ensure_gitignore(path: &Path) -> std::io::Result<()> {
     if gitignore_path.exists() {
         let content = read_to_string(&gitignore_path)?;
 
-        // Check for existing rules
+        // Detect existing rules (specific OR wildcard)
         let patterns = [
             "*.sublime-project",
             "*.sublime-workspace",
@@ -152,14 +152,14 @@ fn ensure_gitignore(path: &Path) -> std::io::Result<()> {
             .append(true)
             .open(&gitignore_path)?;
 
-        // Ensure newline separation
+        // Ensure spacing (avoid glued lines)
         writeln!(file)?;
         writeln!(file, "# Ignore Sublime Text project files")?;
         writeln!(file, "*.sublime-*")?;
 
         println!("✓ Updated .gitignore: {}", gitignore_path.display());
     } else {
-        println!("✓ .gitignore already contains Sublime ignore rules");
+        println!("✓ .gitignore already contains Sublime rules");
     }
 
     Ok(())
@@ -215,6 +215,7 @@ fn main() {
         process::exit(1);
     }
 
+    // Update .gitignore safely
     if let Err(e) = ensure_gitignore(&target_dir) {
         eprintln!("Warning: Failed to update .gitignore: {}", e);
     }
