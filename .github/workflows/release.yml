@@ -5,7 +5,7 @@ on:
     tags:
       - "v*"
 
-# 🔥 Prevent auto-cancel bugs
+# 🚫 prevent random cancellation
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
@@ -24,15 +24,21 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            bin: sublime-gen
+            bin: sublgen
 
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            bin: sublime-gen.exe
+            bin: sublgen.exe
 
+          # modern mac (ARM)
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            bin: sublgen
+
+          # optional: intel mac support
           - os: macos-latest
             target: x86_64-apple-darwin
-            bin: sublime-gen
+            bin: sublgen
 
     steps:
       - name: Checkout
@@ -49,11 +55,26 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
+      # 🔥 FIXED PACKAGE STEP (NO MORE FAIL)
       - name: Package
         shell: bash
         run: |
           mkdir -p dist
-          cp target/${{ matrix.target }}/release/${{ matrix.bin }} dist/
+
+          BIN_PATH="target/${{ matrix.target }}/release/${{ matrix.bin }}"
+
+          if [ ! -f "$BIN_PATH" ]; then
+            echo "Fallback → target/release"
+            BIN_PATH="target/release/${{ matrix.bin }}"
+          fi
+
+          if [ ! -f "$BIN_PATH" ]; then
+            echo "ERROR: binary not found"
+            ls -R target
+            exit 1
+          fi
+
+          cp "$BIN_PATH" dist/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -62,7 +83,7 @@ jobs:
           path: dist/*
 
   release:
-    name: Create GitHub Release
+    name: GitHub Release
     needs: build
     runs-on: ubuntu-latest
 
@@ -94,5 +115,5 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Publish crate
+      - name: Publish
         run: cargo publish --token ${{ secrets.CARGO_TOKEN }}

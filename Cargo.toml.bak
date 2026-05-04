@@ -1,26 +1,14 @@
-bin = [
-    { name = "sublgen", path = "src/main.rs" },
-]
-
 [package]
 name = "sublime-gen"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2024"
-authors = [
-    "Hadi Cahyadi <cumulus13@gmail.com>",
-]
+authors = ["Hadi Cahyadi <cumulus13@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Just simple SublimeText Project File generator"
 homepage = "https://github.com/cumulus13/sublime-gen"
 repository = "https://github.com/cumulus13/sublime-gen"
-keywords = [
-    "sublimetext",
-    "cli",
-    "development-tools",
-]
-categories = [
-    "command-line-utilities",
-]
+keywords = ["sublimetext", "cli", "development-tools"]
+categories = ["command-line-utilities"]
 exclude = [
     "sublime-gen.sublime-project",
     "sublime-gen.sublime-workspace",
@@ -29,11 +17,13 @@ exclude = [
     "build.bat",
 ]
 
+[[bin]]
+name = "sublgen"
+path = "src/main.rs"
+
 [dependencies]
 clap-version-flag = "1.0.7"
 
 [dependencies.clap]
 version = "4.4.7"
-features = [
-    "derive",
-]
+features = ["derive"]
