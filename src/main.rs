@@ -135,7 +135,6 @@ fn ensure_gitignore(path: &Path) -> std::io::Result<()> {
         let patterns = [
             "*.sublime-project",
             "*.sublime-workspace",
-            "*.sublime-*"
         ];
 
         for p in &patterns {
@@ -156,6 +155,8 @@ fn ensure_gitignore(path: &Path) -> std::io::Result<()> {
         writeln!(file)?;
         writeln!(file, "# Ignore Sublime Text project files")?;
         writeln!(file, "*.sublime-*")?;
+        writeln!(file, "*.sublime-project")?;
+        writeln!(file, "*.sublime-workspace")?;
 
         println!("✓ Updated .gitignore: {}", gitignore_path.display());
     } else {

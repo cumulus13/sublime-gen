@@ -11,3 +11,18 @@ build.bat
 
 # Added entries (1 items)
 *.exe
+
+# Added entries (1 items)
+download
+
+# Added entries (1 items)
+gitignore_backup/
+
+# Added entries (1 items)
+src/tmp*
+
+# Added entries (1 items)
+tmp*
+
+# Added entries (1 items)
+*.bak
