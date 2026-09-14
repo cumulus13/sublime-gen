@@ -154,7 +154,6 @@ fn ensure_gitignore(path: &Path) -> std::io::Result<()> {
         // Ensure spacing (avoid glued lines)
         writeln!(file)?;
         writeln!(file, "# Ignore Sublime Text project files")?;
-        writeln!(file, "*.sublime-*")?;
         writeln!(file, "*.sublime-project")?;
         writeln!(file, "*.sublime-workspace")?;
 
