@@ -156,6 +156,7 @@ fn ensure_gitignore(path: &Path) -> std::io::Result<()> {
         writeln!(file, "# Ignore Sublime Text project files")?;
         writeln!(file, "*.sublime-project")?;
         writeln!(file, "*.sublime-workspace")?;
+        writeln!(file, "*.bak")?;
 
         println!("✓ Updated .gitignore: {}", gitignore_path.display());
     } else {
